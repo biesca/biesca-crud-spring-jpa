@@ -1,0 +1,60 @@
+definitions:
+  NewTaskDto: 
+    type: object     
+    properties:
+      taskCode:
+        description: "Task code identifier"
+        type: string
+      taskDescription:
+        description: "Task description"
+        type: string
+ 
+  TaskList: 
+    type: array 
+    items: 
+      $ref: '#/definitions/TaskDto'
+
+  TaskStatusList: 
+    type: array 
+    items: 
+      $ref: '#/definitions/TaskStatusDto'
+      
+  TaskDto:
+    type: object     
+    properties:
+      properties:
+      taskId: 
+        type: integer
+        format: int64
+        description: 'Task identifier'
+      taskCode:
+        description: "Unique Task code"
+        type: string
+      taskDescription:
+        description: "task Description"
+        type: string
+      taskStatus:
+        description: "task status"
+        $ref: '#/definitions/TaskStatusDto'
+      createdAt: 
+        description: "Creation date"
+        type: string
+        format: date-time
+      updatedAt:
+        description: "date of update"
+        type: string
+        format: date-time
+      removed:
+        description: "Flag that indicates if task is removed"
+        type: boolean
+        
+  TaskStatusDto:
+    type: object     
+    properties:
+      properties:
+      codeStatus:
+        description: "Unique Task status code"
+        type: string
+      done:
+        type: boolean
+        description: 'flag that indicates if status means task is done'

@@ -1,0 +1,99 @@
+databaseChangeLog:
+- changeSet:
+    id: db.changelog01_biesca
+    author: Alberto Biesca
+    comment: Initial tables
+    changes:
+    
+    # table task_status
+    - createTable:
+        schemaName: biesca_task_instance
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: code_status
+            remarks: code status
+            type: VARCHAR(20)
+        - column:
+            constraints:
+              nullable: false
+            name: done
+            remarks: done
+            defaultValue: false 
+            type: boolean 
+        tableName: task_status 
+    - addPrimaryKey:
+          columnNames: code_status
+          constraintName: pk_task_status
+          tableName: task_status
+          schemaName: biesca_task_instance
+          
+      # table task
+    - createTable:
+        schemaName: biesca_task_instance
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: task_id
+            remarks: task id
+            type: BIGINT
+            autoIncrement: true
+        - column:
+            constraints:
+              nullable: false
+            name: task_code
+            remarks: task code
+            type: VARCHAR(20)
+        - column:
+            name: task_description
+            remarks: task description
+            type: VARCHAR(100) 
+        - column:
+            name: task_code_status
+            remarks: task code status
+            type: VARCHAR(100)
+            constraints:
+              nullable: false   
+        - column:
+            constraints:
+              nullable: false
+            name: created_at
+            remarks: TimeStamp
+            type: TIMESTAMP
+        - column:
+            name: updated_at
+            remarks: TimeStamp
+            type: TIMESTAMP   
+        - column:
+            constraints:
+              nullable: false
+            name: removed
+            remarks: removed(1)/no removed(0)
+            defaultValue: false   
+            type: boolean
+        tableName: task
+    - addPrimaryKey:
+        columnNames: task_id
+        constraintName: pk_task
+        tableName: task
+        schemaName: biesca_task_instance
+    - addUniqueConstraint:
+        columnNames: task_code
+        constraintName: task_code_unique 
+        schemaName: biesca_task_instance
+        tableName: task
+    - addForeignKeyConstraint:
+        baseColumnNames: task_code_status
+        baseTableName: task
+        baseTableSchemaName: biesca_task_instance
+        constraintName: fk_task_status
+        referencedColumnNames: code_status
+        referencedTableName: task_status
+        referencedTableSchemaName: biesca_task_instance 
+    - createSequence:      
+        schemaName: biesca_task_instance
+        sequenceName: seq_task
+        startValue: 1
+        

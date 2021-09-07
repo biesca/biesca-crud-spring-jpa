@@ -1,0 +1,160 @@
+swagger: '2.0'
+info:
+  description: |
+    API to management Tasks App
+    [http://swagger.io](http://swagger.io) or on 
+    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+  version: "1.0.0"
+  title: "Biesca Ms"
+  contact:
+    email: biesca@gmail.com
+
+tags:
+- name: "Biesca"
+  description: "Biesca Ms"
+paths:
+              
+  /tasks/search/done:
+    get:
+      tags:
+        - "tasks"     
+      summary: Get done tasks
+      description: "Get done tasks"
+      operationId: getDoneTasks
+      produces:
+        - application/json      
+      responses:
+        200:
+          description: "Done tasks list"
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskList"
+            
+  /tasks/search/unfinished:
+    get:
+      tags:
+        - "tasks"     
+      summary: Get unfinished tasks
+      description: "Get unfinished tasks"
+      operationId: getUnfinishedTasks
+      produces:
+        - application/json      
+      responses:
+        200:
+          description: "Unfinished tasks list"
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskList"          
+      
+            
+  /tasks/add/:
+    post:
+      tags:
+        - "tasks"
+      consumes:
+        - application/json
+      summary: Add new task into the system. The task will be saved with status NEW
+      description: "Add new task into the system. The task will be saved with status NEW"
+      operationId: addNewTask
+      produces:
+        - application/json
+      parameters:
+       - name: "newTaskDto"
+         required: true
+         in: body
+         description: "Task Dto"
+         schema:
+            $ref: "./model.yaml#/definitions/NewTaskDto"
+      responses:
+        201:
+          description: "New Task DTO"
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskDto"
+        208:
+          description: Task code already exists
+         
+  /tasks/getAll/:
+    get:
+      tags:
+      - tasks
+      summary: Get all tasks in system
+      operationId: getAllTasks
+      description: Get all tasks in system
+      produces:
+      - application/json
+      responses:
+        200:
+          description: "Get all tasks in system"
+          type: array       
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskList"       
+          
+  /tasks/updateTaskStatus/:
+    patch:
+      tags:
+      - tasks
+      summary: Updates status task 
+      operationId: updateTaskStatus
+      description: Updates status task 
+      produces:
+      - application/json
+      parameters:
+        - $ref: "./parameters.yaml#/parameters/taskCode"
+        - $ref: "./parameters.yaml#/parameters/taskStatus"
+      responses:
+        200:
+          description: Task successfully updated
+        404:
+          description: 'Task code not found'        
+  
+  /tasks/delete/:
+    delete:
+      tags:
+      - tasks
+      summary: Deletes a task (logical delete)
+      operationId: deleteTask
+      description: Deletes a task (logical delete)
+      produces:
+      - application/json
+      parameters: 
+        - $ref: "./parameters.yaml#/parameters/taskCode" 
+      responses:
+        200:
+          description: task successfully deleted
+        404:
+          description: Task code not found'
+
+        
+  /tasksStatus/getAll/:
+    get:
+      tags:
+      - taskStatus
+      summary: Get all tasks status in system
+      operationId: getAllTasksStatus
+      description: Get all tasks status in system
+      produces:
+      - application/json
+      responses:
+        200:
+          description: "Get all tasks status in system"
+          type: array       
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskStatusList"     
+            
+  /tasksStatus/find/:
+    get: 
+      tags:
+      - taskStatus
+      summary: Find task status by code status
+      operationId: findTaskStatus
+      description: Find task status by code status
+      produces:
+      - application/json
+      parameters:
+        - $ref: "./parameters.yaml#/parameters/taskStatus"
+      responses:
+        201:
+          description: "Task Status"
+          schema:            
+            $ref: "./model.yaml#/definitions/TaskStatusDto"
+        404:
+          description: 'Task status code not found'
+        

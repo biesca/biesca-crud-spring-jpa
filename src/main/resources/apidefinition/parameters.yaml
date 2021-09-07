@@ -1,0 +1,26 @@
+parameters:
+  taskCode:
+    in: header
+    name: Task-code
+    description: 'Task Code'
+    required: true
+    type: string
+  
+  taskStatus:
+    in: header
+    name: Task-status
+    description: 'Task-status'
+    required: true
+    type: string
+    enum:
+        - 'NEW'
+        - 'DOING'
+        - 'DONE'
+        - 'STOPPED'
+    
+  taskDescription:
+    in: header
+    name: Task-description
+    description: 'Task description'
+    required: true
+    type: string    
