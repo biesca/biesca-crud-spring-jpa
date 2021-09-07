@@ -1,0 +1,134 @@
+databaseChangeLog:
+- changeSet:
+    id: db.changelog02_biesca
+    author: Alberto Biesca
+    comment: Initial inserts
+    changes:
+    
+     ##################################         
+     ###    TABLE task_status       ###
+     ##################################  
+   
+     - insert:
+         tableName:  task_status
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: code_status
+             value: "NEW"
+         - column:
+             name: done
+             value: false 
+     - insert:
+         tableName:  task_status
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: code_status
+             value: "DOING"
+         - column:
+             name: done
+             value: false             
+     - insert:
+         tableName:  task_status
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: code_status
+             value: "DONE"
+         - column:
+             name: done
+             value: true             
+     - insert:
+         tableName:  task_status
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: code_status
+             value: "STOPPED"
+         - column:
+             name: done
+             value: false             
+     - insert:
+         tableName:  task_status
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: code_status
+             value: "REMOVED"
+         - column:
+             name: done
+             value: false    
+       
+       
+     ##################################         
+     ###      TABLE task            ###
+     ##################################    
+       
+     - insert:
+         tableName:  task
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: task_id
+             valueComputed: "nextval('biesca_task_instance.seq_task')" 
+         - column:
+             name: task_code
+             value: TASK001
+         - column:
+             name: task_description
+             value: TASK001 description  
+         - column:
+             name: task_code_status
+             value: NEW  
+         - column:
+             name: removed
+             value: false       
+         - column:
+             name: created_at
+             value: now()   
+     - insert:
+         tableName:  task
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: task_id
+             valueComputed: "nextval('biesca_task_instance.seq_task')" 
+         - column:
+             name: task_code
+             value: TASK002
+         - column:
+             name: task_description
+             value: TASK002 description
+         - column:
+             name: task_code_status
+             value: DOING  
+         - column:
+             name: removed
+             value: false       
+         - column:
+             name: created_at
+             value: now()   
+     - insert:
+         tableName:  task
+         schemaName: biesca_task_instance
+         columns:             
+         - column:
+             name: task_id
+             valueComputed: "nextval('biesca_task_instance.seq_task')" 
+         - column:
+             name: task_code
+             value: TASK003
+         - column:
+             name: task_description
+             value: TASK003 description
+         - column:
+             name: task_code_status
+             value: DONE  
+         - column:
+             name: removed
+             value: false       
+         - column:
+             name: created_at
+             value: now()  
+       
