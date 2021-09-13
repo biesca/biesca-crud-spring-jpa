@@ -1,7 +1,5 @@
 package com.biesca.application.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,24 +16,24 @@ import com.biesca.generated.model.TaskDto;
 import com.biesca.generated.model.TaskList;
 
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 
 @Api(tags = {"tasks"})
 @Controller
 @RestController
+@Slf4j
 public class TasksApiImpl implements TasksApi {
 	
 	@Autowired
 	ITaskService iTaskService;
 	
 	@Autowired
-	ITaskStatusService iTaskStatusService;
-	
-	private static final Logger LOGGER = LoggerFactory.getLogger(TasksApiImpl.class);	
+	ITaskStatusService iTaskStatusService;	
 	
 	@Override
 	public ResponseEntity<TaskList> getDoneTasks() {
 		
-		LOGGER.info("getDoneTasks");	
+		log.info("getDoneTasks");	
 		
 		return new ResponseEntity<>(iTaskService.findByByDoneStatus(true),HttpStatus.OK);
 	}
@@ -44,7 +42,7 @@ public class TasksApiImpl implements TasksApi {
 	@Override
 	public ResponseEntity<TaskList> getUnfinishedTasks() {
 		
-		LOGGER.info("getUnfinishedTasks");		
+		log.info("getUnfinishedTasks");		
 		
 		return new ResponseEntity<>(iTaskService.findByByDoneStatus(false),HttpStatus.OK);
 	}
@@ -53,12 +51,12 @@ public class TasksApiImpl implements TasksApi {
 	@Override
 	public ResponseEntity<TaskDto> addNewTask(NewTaskDto newTaskDto) {
 
-		LOGGER.info("addNewTask = {} ", newTaskDto);
+		log.info("addNewTask = {} ", newTaskDto);
 
 		try {
 			return new ResponseEntity<>(iTaskService.saveTask(newTaskDto), HttpStatus.CREATED);
 		} catch (AlreadyExistsException e) {
-			LOGGER.warn("addNewTask | code task exists");
+			log.warn("addNewTask | code task exists");
 			return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
 		}
 	}
@@ -67,7 +65,7 @@ public class TasksApiImpl implements TasksApi {
 	@Override
 	public ResponseEntity<TaskList> getAllTasks() {
 
-		LOGGER.info("getAllTasks");
+		log.info("getAllTasks");
 		
 		return new ResponseEntity<>(iTaskService.findAll(),HttpStatus.OK);
 	}	
@@ -76,7 +74,7 @@ public class TasksApiImpl implements TasksApi {
 	@Override
 	public ResponseEntity<Void> updateTaskStatus(String taskCode, String taskStatus) {
 
-		LOGGER.info("updateTaskStatus");
+		log.info("updateTaskStatus");
 
 		try {
 
@@ -84,7 +82,7 @@ public class TasksApiImpl implements TasksApi {
 			return new ResponseEntity<>(HttpStatus.OK);
 		
 		} catch (NotFoundException e) {			
-			LOGGER.warn("addNewTask | code task not found");
+			log.warn("addNewTask | code task not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);		
 		}
 	}
@@ -93,7 +91,7 @@ public class TasksApiImpl implements TasksApi {
 	@Override
 	public ResponseEntity<Void> deleteTask(String taskCode) {
 
-		LOGGER.info("deleteTask");	
+		log.info("deleteTask");	
 		
 		try {
 
@@ -101,7 +99,7 @@ public class TasksApiImpl implements TasksApi {
 			return new ResponseEntity<>(HttpStatus.OK);
 		
 		} catch (NotFoundException e) {			
-			LOGGER.warn("addNewTask | code task not found");
+			log.warn("addNewTask | code task not found");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);		
 		}
 	}

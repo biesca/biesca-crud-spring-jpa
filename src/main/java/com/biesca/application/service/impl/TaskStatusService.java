@@ -2,8 +2,6 @@ package com.biesca.application.service.impl;
 
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +12,11 @@ import com.biesca.application.service.transform.TransformUtils;
 import com.biesca.generated.model.TaskStatusDto;
 import com.biesca.generated.model.TaskStatusList;
 
-@Service
-public class TaskStatusService implements ITaskStatusService {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskStatusService.class);
+@Service
+@Slf4j
+public class TaskStatusService implements ITaskStatusService {
 
 	@Autowired
 	TransformUtils transformUtils;
@@ -33,7 +32,7 @@ public class TaskStatusService implements ITaskStatusService {
 	@Override
 	public TaskStatusDto findByTaskStatusCode(String statusCode) {
 		
-		LOGGER.info("findByTaskStatusCode. statusCode = {} ", statusCode);
+		log.info("findByTaskStatusCode. statusCode = {} ", statusCode);
 		
 		Optional<TaskStatusData> status = taskStatusRepository.findById(statusCode);
 				
@@ -49,15 +48,14 @@ public class TaskStatusService implements ITaskStatusService {
 	@Override
 	public TaskStatusList findAll() {
 		
-		LOGGER.info("findAll");
+		log.info("findAll");
 
 		TaskStatusList lTaskStatus = new TaskStatusList();
-
-		taskStatusRepository.findAll().forEach(taskStatus -> {
-			lTaskStatus.add(transformUtils.convertToTaskStatusDto(taskStatus));
-		});
-
-		return lTaskStatus;		
+		
+		taskStatusRepository.findAll().stream()
+		  .map(task ->transformUtils.convertToTaskStatusDto(task))
+		  .forEach(taskTransf -> lTaskStatus.add(taskTransf));			
+		
+		return lTaskStatus;
 	}
-
 }
