@@ -3,8 +3,6 @@ package com.biesca.application.service.impl;
 import java.time.OffsetDateTime;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,10 +19,11 @@ import com.biesca.generated.model.NewTaskDto;
 import com.biesca.generated.model.TaskDto;
 import com.biesca.generated.model.TaskList;
 
-@Service
-public class TaskService implements ITaskService {
+import lombok.extern.slf4j.Slf4j;
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(TaskService.class);
+@Service
+@Slf4j
+public class TaskService implements ITaskService {
 
 	@Autowired
 	TaskRepository taskRepository;
@@ -45,16 +44,14 @@ public class TaskService implements ITaskService {
 	@Override
 	public TaskList findByByDoneStatus(Boolean done) {
 		
-		LOGGER.info("findByByDoneStatus. done = {} ", done);	
+		log.info("findByByDoneStatus. done = {} ", done);	
 
 		TaskList lTask = new TaskList();
 		
-		//This part of code could be more optimal searching by done status in database, but that would not allow me to use some lambda ;)
 		taskRepository.findAll().stream()
-        .filter(task -> task.getTaskStatusData().getDone().equals(done))
-        .forEach(task->
-        	lTask.add(transformUtils.convertToTaskDto(task))
-        );
+		.filter(task -> task.getTaskStatusData().getDone().equals(done))
+		.map(task -> transformUtils.convertToTaskDto(task))
+		.forEach(taskTr -> lTask.add(taskTr));
 		
 		return lTask;
 	}
@@ -65,14 +62,14 @@ public class TaskService implements ITaskService {
 	 */
 	@Override
 	public TaskList findAll() {
-
-		LOGGER.info("findAll");
+		
+		log.info("findAll");
 
 		TaskList lTask = new TaskList();
-
-		taskRepository.findAll().forEach(task -> 			
-			lTask.add(transformUtils.convertToTaskDto(task))
-		);
+		
+		taskRepository.findAll().stream()
+		  .map(task ->transformUtils.convertToTaskDto(task))
+		  .forEach(taskTransf -> lTask.add(taskTransf));	
 
 		return lTask;
 	}
@@ -87,7 +84,7 @@ public class TaskService implements ITaskService {
 	@Override
 	public TaskDto saveTask(NewTaskDto newTaskDto) {
 
-		LOGGER.info("saveTask - newTaskDto = {}", newTaskDto);
+		log.info("saveTask - newTaskDto = {}", newTaskDto);
 		
 		if (findByTaskCode(newTaskDto.getTaskCode())!=null)
 			throw new AlreadyExistsException("Task code exists");	
@@ -106,7 +103,7 @@ public class TaskService implements ITaskService {
 	@Override
 	public TaskDto findByTaskCode(String taskCode) {
 		
-		LOGGER.info("findByTaskCode - taskCode = {}", taskCode);
+		log.info("findByTaskCode - taskCode = {}", taskCode);
 		
 		Optional<TaskData> task = taskRepository.findByTaskCode(taskCode);
 		
@@ -127,7 +124,7 @@ public class TaskService implements ITaskService {
 	@Transactional
 	public void updateTaskStatus(String taskCode, String status) {
 
-		LOGGER.info("updateTaskStatus. taskCode = {}, status = {} ", taskCode, status);
+		log.info("updateTaskStatus. taskCode = {}, status = {} ", taskCode, status);
 		
 		Optional<TaskData> taskData = taskRepository.findByTaskCode(taskCode);
 		
@@ -140,7 +137,7 @@ public class TaskService implements ITaskService {
 		if (!status.equals(TaskStatusEnum.REMOVED.getType()))
 			taskData.get().setRemoved(false);
 		
-		taskRepository.saveAndFlush(taskData.get());
+		taskRepository.save(taskData.get());
 	}
 	
 
@@ -157,7 +154,7 @@ public class TaskService implements ITaskService {
 	@Override
 	public void deleteTask(String taskCode) {
 		
-		LOGGER.info("deleteTask. taskCode = {}", taskCode);
+		log.info("deleteTask. taskCode = {}", taskCode);
 		
 		Optional<TaskData> taskData = taskRepository.findByTaskCode(taskCode);
 		
@@ -167,7 +164,7 @@ public class TaskService implements ITaskService {
 		taskData.get().setRemoved(true);
 		taskData.get().setUpdatedAt(OffsetDateTime.now());
 		taskData.get().setTaskStatusData(TaskStatusData.builder().codeStatus(TaskStatusEnum.REMOVED.getType()).build());
-		taskRepository.saveAndFlush(taskData.get());
+		taskRepository.save(taskData.get());
 	}	
 
 }
