@@ -46,7 +46,6 @@ public class TaskData implements java.io.Serializable {
 	private String taskDescription;
 	
 	@ManyToOne(targetEntity=TaskStatusData.class, fetch=FetchType.EAGER)	
-	@org.hibernate.annotations.Cascade({org.hibernate.annotations.CascadeType.LOCK})	
 	@JoinColumns(value={ @JoinColumn(name="task_code_status", referencedColumnName="code_status", nullable=false) }, foreignKey=@ForeignKey(name="fk_task_status"))	
 	private TaskStatusData taskStatusData;
     
